@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Row, Col, ListGroup, Button, Image, Card } from 'react-bootstrap'
 import Rating from '../components/Rating'
@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getProductDetail } from '../actions/productActions'
 import Loader from '../components/Loader'
 import AlertMessage from '../components/AlertMessage'
+import { Form } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -13,6 +15,13 @@ function ProductScreen() {
   const {id} = useParams()
   const dispatch = useDispatch()
   const {loading, product, error} = useSelector(state => state.productDetail)
+  const [qty, setQty] = useState(1)
+  const navigate = useNavigate()
+
+  function handleAdd2Cart(){
+    
+    navigate(`/cart/${id}?qty=${qty}`)
+  }
 
   
   useEffect(() => {
@@ -71,6 +80,26 @@ function ProductScreen() {
                             </Row>
                         </ListGroup.Item>
 
+                        {
+                            product.countInStock > 0 && (
+                                <ListGroup.Item>
+                                    <Row>
+                                        <Col>Qty:</Col>
+                                        <Col>
+                                        <Form.Select aria-label="Default select example" onChange={e=>setQty(e.target.value)}>
+                                            {[...Array(product.countInStock).keys()].map(i=>(
+                                                <option value={i+1}>{i+1}</option>
+                                            ))}
+                                        </Form.Select>
+                                        </Col>
+                                    </Row>
+                                </ListGroup.Item>
+                            )
+                        }
+                        
+
+
+
                         
 
 
@@ -78,7 +107,8 @@ function ProductScreen() {
                             <Button
                                 className='btn-block'
                                 disabled={product.countInStock === 0}
-                                type='button'>
+                                type='button'
+                                onClick={handleAdd2Cart}>
                                 Add to Cart
                             </Button>
                         </ListGroup.Item>
