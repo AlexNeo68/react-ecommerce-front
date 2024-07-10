@@ -17,7 +17,7 @@ export const cartReducer = (
                         if(item._id === added._id) {
                             return {
                                 ...item,
-                                qty: Number(item.qty)+Number(added.qty)
+                                qty: Number(added.qty)
                             }
                         } else {
                             return { ...item }
