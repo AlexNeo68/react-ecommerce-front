@@ -30,4 +30,21 @@ export const addToCart = (id, qty) => async (dispatch, getState) => {
         // )        
     }
 }
+export const removeFromCart = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: CART_DELETE_ITEM,
+            payload: id
+        })
 
+        localStorage.setItem('cartItems', JSON.stringify(getState().cart.items))
+    } catch (error) {
+        // dispatch(
+        //     {
+        //         type: PRODUCT_LIST_FAIL,
+        //         payload: error.response && error.response.data.message ? 
+        //         error.response.data.message : error.message
+        //     }
+        // )        
+    }
+}

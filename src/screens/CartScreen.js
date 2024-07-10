@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import queryString from "query-string"
 import { useDispatch, useSelector } from 'react-redux'
-import { addToCart } from '../actions/cartActions'
+import { addToCart, removeFromCart } from '../actions/cartActions'
 import { Form, Col, ListGroup, Row, Image, Button, Card } from 'react-bootstrap'
 import AlertMessage from '../components/AlertMessage'
 
@@ -20,7 +20,7 @@ export default function CartScreen() {
 
 
     function handlerDeleteFromCart(id){
-        console.log('remove from cart', id)
+        dispatch(removeFromCart(id))
     }
 
     const checkoutHandler = () => {
@@ -79,7 +79,7 @@ export default function CartScreen() {
                         <strong>Total:</strong> ${items.reduce((acc, item)=>acc+Number(item.qty)*Number(item.price), 0).toFixed(2)}
                     </ListGroup.Item>
                     <ListGroup.Item>
-                        <Button type='button' onClick={checkoutHandler} className='btn-block'>Proceed to checkout</Button>
+                        <Button type='button' onClick={checkoutHandler} disabled={!items.length} className='btn-block'>Proceed to checkout</Button>
                     </ListGroup.Item>
                 </ListGroup>
             </Card>
