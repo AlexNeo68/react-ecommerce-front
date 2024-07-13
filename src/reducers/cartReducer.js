@@ -30,7 +30,11 @@ export const cartReducer = (
                     items: [...state.items, added]
                 }
             }
-
+        case CART_DELETE_ITEM:
+            return {
+                ...state,
+                items: state.items.filter(item=>item._id!==action.payload)
+            }
         default:
             return state
     }
