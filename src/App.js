@@ -5,6 +5,7 @@ import HomeScreen from "./screens/HomeScreen";
 import { Route, Routes } from 'react-router-dom'
 import ProductScreen from "./screens/ProductScreen";
 import CartScreen from "./screens/CartScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Container>
           <Routes>
             <Route Component={HomeScreen} path="/" exact />
+            <Route Component={LoginScreen} path="/login" />
             <Route Component={ProductScreen} path="/products/:id" />
             <Route Component={CartScreen} path="/cart/:id?" />
           </Routes>
