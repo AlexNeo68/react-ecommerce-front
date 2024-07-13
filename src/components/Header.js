@@ -1,11 +1,22 @@
 import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom'
+import { Button } from 'react-bootstrap';
+import { logout } from '../actions/userActions';
 
 function Header() {
+  
+  const {userInfo} = useSelector(state=>state.userLogin)
+  const dispatch = useDispatch()
+
+  const handlerLogout = () => {
+    dispatch(logout())
+  }
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
@@ -23,9 +34,24 @@ function Header() {
               </Nav.Link>
               
             
-            <Nav.Link><Link to="/login">
+            {userInfo ? (
+              <>
+               <Nav.Link>
+                <Link to="/profile/">
+                  {userInfo.username}
+                </Link>
+              </Nav.Link>
+              <Button variant='link' onClick={handlerLogout}><i class="fa-solid fa-right-from-bracket"></i></Button>
+              </>
+
+              ) : (
+              <Nav.Link><Link to="/login">
               <i className='fas fa-user'></i> Login
-            </Link></Nav.Link>
+              </Link></Nav.Link>
+            )}
+            
+
+
           </Nav>
         </Navbar.Collapse>
       </Container>
