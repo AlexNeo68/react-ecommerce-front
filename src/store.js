@@ -3,7 +3,7 @@ import {composeWithDevTools} from '@redux-devtools/extension'
 import { thunk } from 'redux-thunk'
 import { producListReducer, productDetailReducer } from './reducers/productReducer'
 import { cartReducer } from './reducers/cartReducer'
-import { userLoginReducer, userRegisterReducer } from './reducers/userReducer'
+import { userDetailReducer, userLoginReducer, userRegisterReducer, userUpdateProfileReducer } from './reducers/userReducer'
 
 const reducer = combineReducers({
     'productList': producListReducer,
@@ -11,6 +11,8 @@ const reducer = combineReducers({
     'cart': cartReducer,
     'userLogin': userLoginReducer,
     'userRegister': userRegisterReducer,
+    'userDetails' : userDetailReducer,
+    'userUpdateProfile' : userUpdateProfileReducer,
 })
 
 
@@ -22,6 +24,7 @@ const initialState = {
     cart: {items: cartItemsFromStorage},
     userLogin: {userInfo: userLoginFromStorage},
     userRegister: {userInfo: userLoginFromStorage},
+    userDetails: {user: null},
 }
 
 const middlewares = [thunk]

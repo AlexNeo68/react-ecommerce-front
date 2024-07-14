@@ -34,14 +34,14 @@ function Header() {
               </Nav.Link>
               
             
-            {userInfo ? (
+            {userInfo&&userInfo.token ? (
               <>
                <Nav.Link>
                 <Link to="/profile/">
                   {userInfo.username}
                 </Link>
               </Nav.Link>
-              <Button variant='link' onClick={handlerLogout}><i class="fa-solid fa-right-from-bracket"></i></Button>
+              <Button variant='link' onClick={handlerLogout}><i className="fa-solid fa-right-from-bracket"></i></Button>
               </>
 
               ) : (

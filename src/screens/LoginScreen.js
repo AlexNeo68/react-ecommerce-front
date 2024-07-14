@@ -27,8 +27,7 @@ export default function LoginScreen() {
 
 
     useEffect(()=>{
-        console.log(redirect)
-        if(userInfo){
+        if(userInfo&&userInfo.token){
             navigate(redirect)
         }
     }, [userInfo, redirect, navigate])
