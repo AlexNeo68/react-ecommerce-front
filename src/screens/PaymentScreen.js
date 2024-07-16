@@ -46,7 +46,6 @@ export default function PaymentScreen() {
                      value='paypal'
                      checked
                      onChange={e=>setPaymentMethodForm(e.target.value)}>
-
                      </Form.Check>
                 </Col>
                 
