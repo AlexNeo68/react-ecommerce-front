@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Col, ListGroup, Row, Image, Button, Card, CardBody } from 'react-bootstrap'
 import AlertMessage from '../components/AlertMessage'
 import OrderSteps from '../components/OrderSteps'
+import { createOrder } from '../actions/orderActions'
+import Loader from '../components/Loader'
+import { CREATE_ORDER_CLEAR } from '../constants/orderConstants'
 
 export default function PlaceorderScreen() {
     
@@ -11,6 +14,7 @@ export default function PlaceorderScreen() {
     const [fullAddress, setFulladdress] = useState('')
 
     const { items, shippingAddress, paymentMethod } = useSelector(state=>state.cart)
+    const { order, loading, success, error } = useSelector(state=>state.createOrder)
 
     const cartItemsPrice = items.reduce((acc, item)=>acc+Number(item.qty)*Number(item.price), 0).toFixed(2)
     const shippingPrice = cartItemsPrice > 100 ? 0 : 10
@@ -37,17 +41,35 @@ export default function PlaceorderScreen() {
             }
             setFulladdress(addressAr.join(', '))
         }
+
+        if(!paymentMethod) navigate('/payment')
     },
-    [items, shippingAddress])
+    [items, shippingAddress, paymentMethod])
 
     function handlerPlaceOrder(id){
-        console.log('handle placeorder')
+        dispatch(createOrder({
+            'orderItems': items,
+            'paymentMethod': paymentMethod,
+            'taxPrice': taxPrice,
+            'shippingPrice': shippingPrice,
+            'totalPrice': totalPrice,
+            'shippingAddress': shippingAddress,
+        }))
     }
+    useEffect(()=>{
+        if(success) {navigate(`/orders/${order._id}`) }
+        dispatch({
+            type: CREATE_ORDER_CLEAR,
+        })
+    }, [success])
 
     return (
         <>
         
         <OrderSteps step1 step2 step3 step4></OrderSteps>
+
+        {error&&<AlertMessage variant='danger'>{error}</AlertMessage>}
+        {loading&&<Loader />}
 
         <Row>
             <Col md={8}>
