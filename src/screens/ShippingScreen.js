@@ -15,6 +15,8 @@ export default function ShippingScreen() {
     const [postalCode, setPostalCode] = useState(shippingAddress?.postalCode||'')
     const [country, setCountry] = useState(shippingAddress?.country||'')
 
+    const [items] = useSelector(state=>state.cart)
+
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
