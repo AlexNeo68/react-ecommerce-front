@@ -12,15 +12,21 @@ import { LinkContainer } from 'react-router-bootstrap'
 export default function UserListScreen() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-
-    const {users, loading, error} = useSelector(state=>state.userList)
+    
+    const { users, loading, error } = useSelector(state=>state.userList)
+    const { userInfo } = useSelector(state=>state.userLogin)
 
     const deleteHandler = (id) => {
         console.log('delete user')
     }
 
     useEffect(()=>{
-        dispatch(getUsers())
+        if(userInfo && userInfo.isAdmin){
+            dispatch(getUsers())
+        } else {
+            navigate('/login/')
+        }
+        
     }, [dispatch])
 
 

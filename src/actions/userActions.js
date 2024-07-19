@@ -190,6 +190,7 @@ export const getUsers = () => async (dispatch, getState) => {
     try {
         
         dispatch({type: USER_LIST_REQUEST})
+
         const {userInfo} = getState().userLogin
 
         const config = {
@@ -197,7 +198,6 @@ export const getUsers = () => async (dispatch, getState) => {
                 'Content-type': 'application/json',
                 'Authorization': `Bearer ${userInfo.token}`
             }
-            
         }
 
         const {data} = await axios.get(`/api/users/`, config)
