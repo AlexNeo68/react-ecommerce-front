@@ -9,6 +9,10 @@ import { CREATE_ORDER_REQUEST,
     ORDER_PAY_SUCCESS,
     ORDER_PAY_FAIL,
     ORDER_PAY_RESET,
+    GET_MY_ORDERS_REQUEST,
+    GET_MY_ORDERS_SUCCESS,
+    GET_MY_ORDERS_FAIL,
+    GET_MY_ORDERS_RESET,
 } from '../constants/orderConstants'
 import axios from 'axios'
 
@@ -114,6 +118,41 @@ export const payOrder = (id, resultPayments) => async (dispatch, getState) => {
         dispatch(
             {
                 type: ORDER_PAY_FAIL,
+                payload: error.response && error.response.data.detail ? 
+                error.response.data.detail : error.message
+            }
+        )        
+    }
+}
+
+
+export const getMyOrders = () => async (dispatch, getState) => {
+    try {
+        
+        dispatch({type: GET_MY_ORDERS_REQUEST})
+        
+        const {userInfo} = getState().userLogin
+
+        const config = {
+            'headers': {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${userInfo.token}`
+            }
+            
+        }
+
+        const {data} = await axios.get(`/api/orders/my/`, config)
+
+        dispatch({
+            type: GET_MY_ORDERS_SUCCESS,
+            payload: data
+        })
+        
+
+    } catch (error) {
+        dispatch(
+            {
+                type: GET_MY_ORDERS_FAIL,
                 payload: error.response && error.response.data.detail ? 
                 error.response.data.detail : error.message
             }

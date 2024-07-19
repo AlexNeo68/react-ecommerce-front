@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { Form, Col, Row, Button } from 'react-bootstrap'
+import { Form, Col, Row, Button, Table } from 'react-bootstrap'
 import AlertMessage from '../components/AlertMessage'
 import Loader from '../components/Loader'
 import { getUserDetail, updateUserProfile } from '../actions/userActions'
 import { USER_PROFILE_RESET } from '../constants/userConstants'
+import { getMyOrders } from '../actions/orderActions'
+import { LinkContainer } from 'react-router-bootstrap'
 
 export default function ProfileScreen() {
     const [name, setName] = useState('')
@@ -21,6 +23,7 @@ export default function ProfileScreen() {
     const { user } = useSelector(state=>state.userDetails)
 
     const {success, loading, error} = useSelector(state=>state.userUpdateProfile)
+    const {orders, loading: loadingMyOrders, error: errorMyOrders} = useSelector(state=>state.getMyOrders)
 
 
 
@@ -42,6 +45,7 @@ export default function ProfileScreen() {
                     type: USER_PROFILE_RESET
                 })
                 dispatch(getUserDetail('profile'))
+                dispatch(getMyOrders())
             } else {
                 setName(user.name)
                 setEmail(user.email)
@@ -85,6 +89,39 @@ export default function ProfileScreen() {
         </Col>
         <Col xs={12} md={9}>
             <h2>My Orders</h2>
+            {loadingMyOrders ? (<Loader />) : errorMyOrders ? (
+                <AlertMessage variant='danger'>{errorMyOrders}</AlertMessage>
+            ) :(
+                <Table striped responsive className='table-sm'>
+                    <thead>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Delivered</th>
+                        <th></th>
+                    </thead>
+                    <tbody>
+                        {
+                            orders.map(order => (
+                                <tr key={order._id}>
+                                    <td>{order._id}</td>
+                                    <td>{(new Date(order.createdAt)).toLocaleString("ru-RU")}</td>
+                                    <td>${order.totalPrice}</td>
+                                    <td>{order.isPaid ? order.paidAt : (<i className='fas fa-times'></i>)}</td>
+                                    <td>{order.isDelivered ? order.deliveredAt : (<i className='fas fa-times'></i>)}</td>
+                                    <td>
+                                        <LinkContainer to={`/orders/${order._id}`}>
+                                            <Button className='btn-sm'>Details</Button>
+                                        </LinkContainer>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                    
+                </Table>
+            )  }
         </Col>
 
     </Row>
