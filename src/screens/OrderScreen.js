@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Col, ListGroup, Row, Image, Button, Card, CardBody } from 'react-bootstrap'
 import AlertMessage from '../components/AlertMessage'
-import { getOrder } from '../actions/orderActions'
+import { getOrder, payOrder } from '../actions/orderActions'
 import Loader from '../components/Loader'
 
 export default function OrderScreen() {
@@ -13,9 +13,16 @@ export default function OrderScreen() {
 
     const { order, loading, error } = useSelector(state=>state.getOrder)
     const { userInfo } = useSelector(state=>state.userLogin)
+    const { loading: loadingPay, success: successPay, error: errorPay } = useSelector(state=>state.orderPay)
+
     const {id} = useParams()
 
     const navigate = useNavigate()
+
+    const handlerPay = () => {
+        dispatch(payOrder(id, true))
+        dispatch(getOrder(id))
+    }
 
     useEffect(()=>{
         
@@ -65,6 +72,15 @@ export default function OrderScreen() {
                                     <ListGroup.Item>
                                         User: {order.user.first_name} {order.user.email}
                                     </ListGroup.Item>
+                                    <ListGroup.Item>
+                                    {
+                                            order.isDelivered ? (
+                                                <AlertMessage variant='success'>Order delivered at {order.deliveredAt}</AlertMessage>
+                                            ) : (
+                                                <AlertMessage variant='warning'>Order not delivered</AlertMessage>
+                                            )
+                                        }
+                                    </ListGroup.Item>
                                 </ListGroup>
                             )}
                         </Col>
@@ -77,7 +93,18 @@ export default function OrderScreen() {
                                 <ListGroup>
                                     
                                     <ListGroup.Item>
-                                        {order.paymentMethod}
+                                        <p>
+                                            {order.paymentMethod}
+                                        </p>
+
+                                        {
+                                            order.isPaid ? (
+                                                <AlertMessage variant='success'>Order paid at {order.paidAt}</AlertMessage>
+                                            ) : (
+                                                <AlertMessage variant='warning'>Order not paid</AlertMessage>
+                                            )
+                                        }
+                                        
                                     </ListGroup.Item>
                                 </ListGroup>
                             )}
@@ -132,6 +159,13 @@ export default function OrderScreen() {
                             <div><strong>Shipping price:</strong> ${ order.shippingPrice } </div>
                             <div><strong>Tax:</strong> ${ order.taxPrice } </div>
                             <div className='mb-4'><strong>Total price:</strong> ${ order.totalPrice } </div>
+                            {!order.isPaid && (
+                                <ListGroup.Item>
+                                    {loadingPay && <Loader />}
+
+                                    <Button onClick={handlerPay}>Pay Order</Button>
+                                </ListGroup.Item>
+                            )}
                             
                         </CardBody>
                     </Card>
